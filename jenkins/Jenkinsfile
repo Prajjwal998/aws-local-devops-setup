@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+    environment {
+        AWS_REGION = 'us-east-1' // Change this if your bucket is in a different region
+    }
+    stages {
+        stage('Copy file to Jenkins workspace') {
+            steps {
+                pwd
+                // Adjust the path to your file on the laptop
+                sh 'cp /Desktop/Prajjwal/github/Portfolio/index.html ${WORKSPACE}/index.html'// currently wrong path
+            }
+        }
+        stage('Upload to S3') {
+            steps {
+               withAWS(credentials: 'aws-credentials', region: 'us-east-1') {
+                    s3Upload(bucket: 'prajjwalawsnuckets3', file: 'index.html')
+                }
+            }
+        }
+    }
+}
